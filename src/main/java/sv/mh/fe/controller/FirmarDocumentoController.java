@@ -2,7 +2,7 @@ package sv.mh.fe.controller;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
