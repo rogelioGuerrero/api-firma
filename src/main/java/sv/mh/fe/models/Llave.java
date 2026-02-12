@@ -1,6 +1,7 @@
 package sv.mh.fe.models;
 
 import java.util.Arrays;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import sv.mh.fe.constantes.TipoLlave;
 
@@ -11,6 +12,7 @@ public class Llave {
 	private String algorithm;
 	
 	@JsonProperty("encoded")
+	@JsonAlias({"encodied"})
 	private byte[]	encoded;
 	
 	private String format;
@@ -37,6 +39,14 @@ public class Llave {
 
 	public void setEncoded(byte[] encoded) {
 		this.encoded = encoded;
+	}
+
+	public byte[] getEncodied() {
+		return getEncoded();
+	}
+
+	public void setEncodied(byte[] encodied) {
+		setEncoded(encodied);
 	}
 
 	public String getFormat() {
