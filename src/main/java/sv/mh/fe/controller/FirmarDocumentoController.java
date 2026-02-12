@@ -85,6 +85,13 @@ public class FirmarDocumentoController extends Controller {
 		return ResponseEntity.ok(mensaje.error(Errores.COD_804_ERROR_NO_CATALOGADO));
 	}
 
+	@GetMapping("/debug")
+	public String getDebug(){
+		String envVarName = "certificado.base64.14012805761025";
+		String certificadoEnv = System.getenv(envVarName);
+		return "Variable: " + envVarName + "\nLength: " + (certificadoEnv != null ? certificadoEnv.length() : "null") + "\nFirst 100 chars: " + (certificadoEnv != null ? certificadoEnv.substring(0, Math.min(100, certificadoEnv.length())) : "null");
+	}
+	
 	@GetMapping("/status")
 	public String getStatus(){
 		return "Application is running...!!";
