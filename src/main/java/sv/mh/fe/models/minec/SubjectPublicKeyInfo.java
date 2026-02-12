@@ -1,7 +1,12 @@
 package sv.mh.fe.models.minec;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SubjectPublicKeyInfo {
 
+	@JsonProperty("algorithmIdenitifier")
+	@JsonAlias({"algorithmIdentifier"})
 	private AlgorithmIdenitifier algorithmIdenitifier;
 	
 	private byte[] subjectPublicKey;
