@@ -87,9 +87,15 @@ public class FirmarDocumentoController extends Controller {
 
 	@GetMapping("/debug")
 	public String getDebug(){
+		String enabled = System.getenv("FIRMA_DEBUG");
+		if (enabled == null || !"true".equalsIgnoreCase(enabled)) {
+			throw new org.springframework.web.server.ResponseStatusException(
+					org.springframework.http.HttpStatus.NOT_FOUND);
+		}
+		
 		String envVarName = "certificado.base64.14012805761025";
 		String certificadoEnv = System.getenv(envVarName);
-		return "Variable: " + envVarName + "\nLength: " + (certificadoEnv != null ? certificadoEnv.length() : "null") + "\nFirst 100 chars: " + (certificadoEnv != null ? certificadoEnv.substring(0, Math.min(100, certificadoEnv.length())) : "null");
+		return "Variable: " + envVarName + "\nLength: " + (certificadoEnv != null ? certificadoEnv.length() : "null");
 	}
 	
 	@GetMapping("/status")
