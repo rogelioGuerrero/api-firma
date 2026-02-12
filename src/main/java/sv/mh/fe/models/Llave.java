@@ -1,7 +1,7 @@
 package sv.mh.fe.models;
 
 import java.util.Arrays;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import sv.mh.fe.constantes.TipoLlave;
 
 public class Llave {
@@ -10,7 +10,8 @@ public class Llave {
 	
 	private String algorithm;
 	
-	private byte[]	encodied;
+	@JsonProperty("encoded")
+	private byte[]	encoded;
 	
 	private String format;
 	
@@ -30,12 +31,12 @@ public class Llave {
 		this.algorithm = algorithm;
 	}
 
-	public byte[] getEncodied() {
-		return encodied;
+	public byte[] getEncoded() {
+		return encoded;
 	}
 
-	public void setEncodied(byte[] encodied) {
-		this.encodied = encodied;
+	public void setEncoded(byte[] encoded) {
+		this.encoded = encoded;
 	}
 
 	public String getFormat() {
@@ -55,7 +56,7 @@ public class Llave {
 	
 	@Override
 	public String toString() {
-		return "Key [keyType=" + keyType + ", algorithm=" + algorithm + ", encodied=" + Arrays.toString(encodied)
+		return "Key [keyType=" + keyType + ", algorithm=" + algorithm + ", encoded=" + Arrays.toString(encoded)
 				+ ", format=" + format + "]";
 	}
 	
