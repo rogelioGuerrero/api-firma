@@ -65,7 +65,7 @@ public class FirmarDocumentoController extends Controller {
 						
 						return ResponseEntity.ok(response.toMap());
 					} else {
-						return ResponseEntity.ok(mensaje.error(Errores.COD_811_CONVERTIR_STRING_A_JSON, "DTE object is null"));
+						return ResponseEntity.ok(mensaje.error(Errores.COD_811_CONVERTIR_STRING_A_JSON.getCode(), "DTE object is null"));
 					}										
 				} catch (JsonProcessingException e) {
 					logger.info(errores.COD_810_CONVERTIR_JSON_A_STRING, e.getMessage());
