@@ -23,6 +23,7 @@ public abstract class AbstractValidations {
 	public static String REQ_CLAVE_PUBLICA = "Clave publica es requerida";
 	public static String REQ_CONFIRMACION_PUB = "Clave publica y confirmación no son iguales";
 	public static String REQ_COMPACT_SERIALIZATION = "La Serialización Compacta es requerida";
+	public static String REQ_CERTIFICADO_B64 = "Certificado en Base64 es requerido";
 	
 	public static String REQ_SUBJECT_CONTRY_NAME = "Nombre del país es requerido";
 	public static String REQ_SUBJECT_ORGANI_NAME = "Nombre de la organización es requerido";

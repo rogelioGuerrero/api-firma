@@ -45,44 +45,40 @@ public class FirmarDocumentoController extends Controller {
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.POST)
 	public ResponseEntity<?> firmar(@Valid @RequestBody FirmarDocumentoFilter filter) {
-		CertificadoMH certificado = null;		
 		try {			
 			validation.v5validar(filter);
 			if(validation.isValido()) {
-				certificado = certificadoBusiness.recuperarCertifiado(filter);
-				if(certificado != null) {		        
-					ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-			        String dteString;
-					try {
-						dteString = ow.writeValueAsString(filter.getDteJson());
-						JSONObject dteObject = new JSONObject(dteString);					
-						if(dteObject != null) {
-							logger.info("dteObject != null");
-							String firma;
-							firma = business.firmarJSON(certificado, dteString);
-							return ResponseEntity.ok(mensaje.ok(firma));
-						}										
-					} catch (JsonProcessingException e) {
-						logger.info(errores.COD_810_CONVERTIR_JSON_A_STRING, e.getMessage());
-						return ResponseEntity.ok(mensaje.error(Errores.COD_810_CONVERTIR_JSON_A_STRING));
-					} catch (Exception e) {
-						logger.info(errores.COD_811_CONVERTIR_STRING_A_JSON, e.getMessage());
-						return ResponseEntity.ok(mensaje.error(Errores.COD_811_CONVERTIR_STRING_A_JSON));
-					}	
-				}else {
-					return ResponseEntity.ok(mensaje.error(Errores.COD_803_ERROR_LLAVE_PRUBLICA));
-				}
+				ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+				String dteString;
+				try {
+					dteString = ow.writeValueAsString(filter.getDteJson());
+					JSONObject dteObject = new JSONObject(dteString);					
+					if(dteObject != null) {
+						logger.info("dteObject != null");
+						String firma;
+						firma = business.firmarJSONBase64(filter.getCertificadoB64(), filter.getPasswordPri(), dteString);
+						
+						// Create custom response format
+						JSONObject response = new JSONObject();
+						response.put("success", true);
+						response.put("jws", firma);
+						
+						return ResponseEntity.ok(response.toMap());
+					}										
+				} catch (JsonProcessingException e) {
+					logger.info(errores.COD_810_CONVERTIR_JSON_A_STRING, e.getMessage());
+					return ResponseEntity.ok(mensaje.error(Errores.COD_810_CONVERTIR_JSON_A_STRING));
+				} catch (Exception e) {
+					logger.info(errores.COD_811_CONVERTIR_STRING_A_JSON, e.getMessage());
+					return ResponseEntity.ok(mensaje.error(Errores.COD_811_CONVERTIR_STRING_A_JSON));
+				}	
 			}else {
 				return ResponseEntity.ok(mensaje.error(errores.COD_809_DATOS_REQUERIDOS,validation.getRequeridos()));
 			}			
-		} catch (IOException e1) {
-			logger.error(e1.getMessage());
-			return ResponseEntity.ok(mensaje.error(errores.COD_812_NO_FILE, e1.getMessage()));
-		} catch (NoSuchAlgorithmException e1) {
+		} catch (Exception e1) {
 			logger.error(e1.getMessage());
 			return ResponseEntity.ok(mensaje.error(errores.COD_804_ERROR_NO_CATALOGADO, e1.getMessage()));			
 		}
-		return ResponseEntity.ok(mensaje.error(Errores.COD_804_ERROR_NO_CATALOGADO));
 	}
 
 	@GetMapping("/debug")

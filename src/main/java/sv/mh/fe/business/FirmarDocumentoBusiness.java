@@ -53,4 +53,35 @@ public class FirmarDocumentoBusiness {
 		jws.setKey(key);
 		return jws.getCompactSerialization();
 	}			
+	
+	/**
+	 * Método para crear un JSON Web Signing (JWS) a partir de un certificado en Base64.
+	 * @param certificadoB64
+	 * @param password
+	 * @param contenido, DTE que se quiere firmar
+	 * @throws Exception
+	 */
+	public String firmarJSONBase64(String certificadoB64, String password, String contenido) throws Exception {
+		byte[] certBytes = java.util.Base64.getDecoder().decode(certificadoB64);
+		java.security.KeyStore keyStore = java.security.KeyStore.getInstance("PKCS12");
+		keyStore.load(new java.io.ByteArrayInputStream(certBytes), password.toCharArray());
+		
+		String alias = null;
+		java.util.Enumeration<String> aliases = keyStore.aliases();
+		if (aliases.hasMoreElements()) {
+			alias = aliases.nextElement();
+		}
+		
+		if (alias == null) {
+			throw new Exception("No se encontró un alias en el certificado");
+		}
+		
+		PrivateKey key = (PrivateKey) keyStore.getKey(alias, password.toCharArray());
+		
+		JsonWebSignature jws = new JsonWebSignature();		
+		jws.setPayload(contenido);	
+		jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA512);	
+		jws.setKey(key);
+		return jws.getCompactSerialization();
+	}
 }

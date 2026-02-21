@@ -56,6 +56,9 @@ public class FirmarDocumentoValidations extends AbstractValidations {
 		if(filter.getPasswordPri() == null || filter.getPasswordPri().length()<=0) {
 			this.requeridos.add(REQ_CLAVE_PRIVADA);
 		}
+		if(filter.getCertificadoB64() == null || filter.getCertificadoB64().trim().isEmpty()) {
+			this.requeridos.add(REQ_CERTIFICADO_B64);
+		}
 		return requeridos;
 	}		
 	

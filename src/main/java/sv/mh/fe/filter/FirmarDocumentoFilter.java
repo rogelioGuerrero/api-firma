@@ -11,7 +11,14 @@ public class FirmarDocumentoFilter {
 	private Object dteJson;
 	private String dte;
 	private boolean activo;
+	private String certificadoB64;
 	
+	public String getCertificadoB64() {
+		return certificadoB64;
+	}
+	public void setCertificadoB64(String certificadoB64) {
+		this.certificadoB64 = certificadoB64;
+	}
 
 	public String getPasswordPub() {
 		return passwordPub;
