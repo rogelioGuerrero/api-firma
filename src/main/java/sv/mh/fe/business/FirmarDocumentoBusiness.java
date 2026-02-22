@@ -63,25 +63,43 @@ public class FirmarDocumentoBusiness {
 	 */
 	public String firmarJSONBase64(String certificadoB64, String password, String contenido) throws Exception {
 		byte[] certBytes = java.util.Base64.getDecoder().decode(certificadoB64);
-		java.security.KeyStore keyStore = java.security.KeyStore.getInstance("PKCS12");
-		keyStore.load(new java.io.ByteArrayInputStream(certBytes), password.toCharArray());
 		
-		String alias = null;
-		java.util.Enumeration<String> aliases = keyStore.aliases();
-		if (aliases.hasMoreElements()) {
-			alias = aliases.nextElement();
+		try {
+			// Intentar primero como PKCS12
+			java.security.KeyStore keyStore = java.security.KeyStore.getInstance("PKCS12");
+			keyStore.load(new java.io.ByteArrayInputStream(certBytes), password.toCharArray());
+			
+			String alias = null;
+			java.util.Enumeration<String> aliases = keyStore.aliases();
+			if (aliases.hasMoreElements()) {
+				alias = aliases.nextElement();
+			}
+			
+			if (alias == null) {
+				throw new Exception("No se encontró un alias en el certificado");
+			}
+			
+			PrivateKey key = (PrivateKey) keyStore.getKey(alias, password.toCharArray());
+			
+			JsonWebSignature jws = new JsonWebSignature();		
+			jws.setPayload(contenido);	
+			jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA512);	
+			jws.setKey(key);
+			return jws.getCompactSerialization();
+		} catch (Exception e) {
+			// Si falla como PKCS12 (ej. "toDerInputStream rejects tag type 60"), 
+			// asumimos que es el XML del Ministerio de Hacienda codificado en Base64
+			try {
+				String xmlContent = new String(certBytes);
+				com.fasterxml.jackson.dataformat.xml.XmlMapper xmlMapper = new com.fasterxml.jackson.dataformat.xml.XmlMapper();
+				com.fasterxml.jackson.datatype.jsr310.JavaTimeModule module = new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule();
+				xmlMapper.registerModule(module);
+				
+				CertificadoMH cert = xmlMapper.readValue(xmlContent, CertificadoMH.class);
+				return firmarJSON(cert, contenido);
+			} catch (Exception xmlEx) {
+				throw new Exception("El certificadoB64 no es un PKCS12 válido ni un XML de CertificadoMH válido. Error original: " + e.getMessage());
+			}
 		}
-		
-		if (alias == null) {
-			throw new Exception("No se encontró un alias en el certificado");
-		}
-		
-		PrivateKey key = (PrivateKey) keyStore.getKey(alias, password.toCharArray());
-		
-		JsonWebSignature jws = new JsonWebSignature();		
-		jws.setPayload(contenido);	
-		jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA512);	
-		jws.setKey(key);
-		return jws.getCompactSerialization();
 	}
 }

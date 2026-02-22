@@ -72,7 +72,12 @@ public class FirmarDocumentoController extends Controller {
 					if(dteObject != null) {
 						logger.info("dteObject != null");
 						String firma;
-						firma = business.firmarJSONBase64(filter.getCertificadoB64(), filter.getPasswordPri(), dteString);
+						try {
+							firma = business.firmarJSONBase64(filter.getCertificadoB64(), filter.getPasswordPri(), dteString);
+						} catch (Exception firmaEx) {
+							logger.error("Error en el proceso de firma: " + firmaEx.getMessage(), firmaEx);
+							return ResponseEntity.ok(mensaje.error(errores.COD_804_ERROR_NO_CATALOGADO.getCode(), "Error al firmar: " + firmaEx.getMessage()));
+						}
 						
 						// Create custom response format
 						JSONObject response = new JSONObject();
