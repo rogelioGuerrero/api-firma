@@ -51,7 +51,23 @@ public class FirmarDocumentoController extends Controller {
 				ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 				String dteString;
 				try {
-					dteString = ow.writeValueAsString(filter.getDteJson());
+					// Log para depuración
+					logger.info("dteJson type: " + (filter.getDteJson() != null ? filter.getDteJson().getClass().getName() : "null"));
+					logger.info("dteJson value: " + filter.getDteJson());
+					
+					// Manejar ambos casos: objeto JSON o string
+					if (filter.getDteJson() instanceof String) {
+						dteString = (String) filter.getDteJson();
+						// Validar que sea JSON válido
+						try {
+							new JSONObject(dteString);
+						} catch (Exception jsonEx) {
+							return ResponseEntity.ok(mensaje.error(Errores.COD_811_CONVERTIR_STRING_A_JSON.getCode(), "El dteJson proporcionado no es un JSON válido"));
+						}
+					} else {
+						dteString = ow.writeValueAsString(filter.getDteJson());
+					}
+					
 					JSONObject dteObject = new JSONObject(dteString);					
 					if(dteObject != null) {
 						logger.info("dteObject != null");
@@ -68,11 +84,11 @@ public class FirmarDocumentoController extends Controller {
 						return ResponseEntity.ok(mensaje.error(Errores.COD_811_CONVERTIR_STRING_A_JSON.getCode(), "DTE object is null"));
 					}										
 				} catch (JsonProcessingException e) {
-					logger.info(errores.COD_810_CONVERTIR_JSON_A_STRING, e.getMessage());
-					return ResponseEntity.ok(mensaje.error(Errores.COD_810_CONVERTIR_JSON_A_STRING));
+					logger.error("JSON Processing Error - " + errores.COD_810_CONVERTIR_JSON_A_STRING + ": " + e.getMessage(), e);
+					return ResponseEntity.ok(mensaje.error(Errores.COD_810_CONVERTIR_JSON_A_STRING.getCode(), "Error procesando JSON: " + e.getMessage()));
 				} catch (Exception e) {
-					logger.info(errores.COD_811_CONVERTIR_STRING_A_JSON, e.getMessage());
-					return ResponseEntity.ok(mensaje.error(Errores.COD_811_CONVERTIR_STRING_A_JSON));
+					logger.error("JSON Conversion Error - " + errores.COD_811_CONVERTIR_STRING_A_JSON + ": " + e.getMessage(), e);
+					return ResponseEntity.ok(mensaje.error(Errores.COD_811_CONVERTIR_STRING_A_JSON.getCode(), "Error convirtiendo a JSON: " + e.getMessage()));
 				}	
 			}else {
 				return ResponseEntity.ok(mensaje.error(errores.COD_809_DATOS_REQUERIDOS,validation.getRequeridos()));
