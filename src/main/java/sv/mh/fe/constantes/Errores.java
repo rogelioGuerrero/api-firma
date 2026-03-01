@@ -30,19 +30,4 @@ public enum Errores {
 		this.code = codigo;
 		this.text = texto;
 	}
-	
-	public static class errores{
-		public static final String COD_801_CERT_ERROR_NO_ENCOTRADO = "801"; 
-		public static final String COD_802_NO_VALIDO = "802";
-		public static final String COD_803_ERROR_LLAVE_PRUBLICA = "803";
-		public static final String COD_804_ERROR_NO_CATALOGADO = "804";
-		public static final String COD_805_ERROR_CERTIFCADO_DUPLICADO = "805";
-		public static final String COD_806_ERROR_GENERACION_CERTIFICADO = "806";
-		public static final String COD_807_ERROR_DESCARGAR_ARCHIVO = "807";
-		public static final String COD_808_ERROR_SUBUR_ARCHIVO = "808";	
-		public static final String COD_809_DATOS_REQUERIDOS = "809";
-		public static final String COD_810_CONVERTIR_JSON_A_STRING = "810";
-		public static final String COD_811_CONVERTIR_STRING_A_JSON = "811";
-		public static final String COD_812_NO_FILE = "812";
-	}
 }

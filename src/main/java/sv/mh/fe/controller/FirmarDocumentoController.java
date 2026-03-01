@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import sv.mh.fe.business.CertificadoBusiness;
 import sv.mh.fe.business.FirmarDocumentoBusiness;
 import sv.mh.fe.constantes.Errores;
-import sv.mh.fe.constantes.Errores.errores;
 import sv.mh.fe.filter.FirmarDocumentoFilter;
 import sv.mh.fe.models.CertificadoMH;
 import sv.mh.fe.validations.FirmarDocumentoValidations;
@@ -76,7 +75,7 @@ public class FirmarDocumentoController extends Controller {
 							firma = business.firmarJSONBase64(filter.getCertificadoB64(), filter.getPasswordPri(), dteString);
 						} catch (Exception firmaEx) {
 							logger.error("Error en el proceso de firma: " + firmaEx.getMessage(), firmaEx);
-							return ResponseEntity.ok(mensaje.error(errores.COD_804_ERROR_NO_CATALOGADO, "Error al firmar: " + firmaEx.getMessage()));
+							return ResponseEntity.ok(mensaje.error(Errores.COD_804_ERROR_NO_CATALOGADO.getCode(), "Error al firmar: " + firmaEx.getMessage()));
 						}
 						
 						// Create custom response format
@@ -89,18 +88,18 @@ public class FirmarDocumentoController extends Controller {
 						return ResponseEntity.ok(mensaje.error(Errores.COD_811_CONVERTIR_STRING_A_JSON.getCode(), "DTE object is null"));
 					}										
 				} catch (JsonProcessingException e) {
-					logger.error("JSON Processing Error - " + errores.COD_810_CONVERTIR_JSON_A_STRING + ": " + e.getMessage(), e);
+					logger.error("JSON Processing Error - " + Errores.COD_810_CONVERTIR_JSON_A_STRING.getCode() + ": " + e.getMessage(), e);
 					return ResponseEntity.ok(mensaje.error(Errores.COD_810_CONVERTIR_JSON_A_STRING.getCode(), "Error procesando JSON: " + e.getMessage()));
 				} catch (Exception e) {
-					logger.error("JSON Conversion Error - " + errores.COD_811_CONVERTIR_STRING_A_JSON + ": " + e.getMessage(), e);
+					logger.error("JSON Conversion Error - " + Errores.COD_811_CONVERTIR_STRING_A_JSON.getCode() + ": " + e.getMessage(), e);
 					return ResponseEntity.ok(mensaje.error(Errores.COD_811_CONVERTIR_STRING_A_JSON.getCode(), "Error convirtiendo a JSON: " + e.getMessage()));
 				}	
 			}else {
-				return ResponseEntity.ok(mensaje.error(errores.COD_809_DATOS_REQUERIDOS,validation.getRequeridos()));
+				return ResponseEntity.ok(mensaje.error(Errores.COD_809_DATOS_REQUERIDOS.getCode(),validation.getRequeridos()));
 			}			
 		} catch (Exception e1) {
 			logger.error(e1.getMessage());
-			return ResponseEntity.ok(mensaje.error(errores.COD_804_ERROR_NO_CATALOGADO, e1.getMessage()));			
+			return ResponseEntity.ok(mensaje.error(Errores.COD_804_ERROR_NO_CATALOGADO.getCode(), e1.getMessage()));			
 		}
 	}
 
